@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Timers;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using MahApps.Metro.Controls;
 using MusicTimeCore;
@@ -54,19 +55,23 @@ namespace MusicTimeGUI
                 if (_currentSong == -1 || _currentSong == _history.Count - 1)
                 {
                     NextButton.IsEnabled = false;
+                    NextRect.Fill = Brushes.Gray;
                 }
                 else
                 {
                     NextButton.IsEnabled = true;
+                    NextRect.Fill = Brushes.Black;
                 }
 
                 if ((_currentSong == -1 || _currentSong == 0) && percentage < 0.05d)
                 {
                     PrevButton.IsEnabled = false;
+                    PrevRect.Fill = Brushes.Gray;
                 }
                 else
                 {
                     PrevButton.IsEnabled = true;
+                    PrevRect.Fill = Brushes.Black;
                 }
             });
         }
@@ -83,7 +88,12 @@ namespace MusicTimeGUI
             {
                 _isPaused = value;
                 //PlayPauseButton.Content = value ? "Play" : "Pause";
-                PlayPauseButton.Content = value ? ">" : "||";
+                //PlayPauseButton.Content = value ? ">" : "||";
+                PlayPauseVisual = new VisualBrush()
+                {
+                    //Visual = value ? (Visual) Resources["appbar_control_play"] : (Visual) Resources["appbar_control_pause"],
+                    Visual = (Visual)Resources["appbar_control_pause"],
+                };
             }
         }
 
@@ -95,11 +105,12 @@ namespace MusicTimeGUI
             if (string.IsNullOrWhiteSpace(query)) return;
             Thread searchThread = new Thread((ThreadStart) delegate
             {
-                SearchFeedbackLabel.Dispatcher.BeginInvoke((Action) delegate
+                SearchProgressRing.Dispatcher.BeginInvoke((Action) delegate
                 {
-                    SearchFeedbackLabel.Content = "Searching...";
+                    SearchProgressRing.IsActive = true;
                     textBox.IsEnabled = false;
                     searchButton.IsEnabled = false;
+                    SearchResultsGrid.IsEnabled = false;
                 });
                 IEnumerable<Song> result;
                 try
@@ -123,11 +134,12 @@ namespace MusicTimeGUI
                 {
                     SearchResultsGrid.ItemsSource = songs;
                 });
-                SearchFeedbackLabel.Dispatcher.BeginInvoke((Action)delegate
+                SearchProgressRing.Dispatcher.BeginInvoke((Action)delegate
                 {
-                    SearchFeedbackLabel.Content = "";
+                    SearchProgressRing.IsActive = false;
                     textBox.IsEnabled = true;
                     searchButton.IsEnabled = true;
+                    SearchResultsGrid.IsEnabled = true;
                 });
             });
             searchThread.Start();
@@ -182,6 +194,7 @@ namespace MusicTimeGUI
 
         private void SetSongPicture(KnownSongInfo info)
         {
+            songPicture.Source = new BitmapImage(new Uri("DefaultAlbum.png", UriKind.Relative));
             Thread pic = new Thread((ThreadStart) delegate
             {
                 string uri;
@@ -196,10 +209,7 @@ namespace MusicTimeGUI
                 }
                 catch (NullReferenceException)
                 {
-                    songPicture.Dispatcher.BeginInvoke((Action) delegate
-                    {
-                        songPicture.Source = new BitmapImage(new Uri("DefaultAlbum.png", UriKind.Relative));
-                    });
+                    // No album cover found.
                     return;
                 }
                 SetPicture(uri);
@@ -247,6 +257,34 @@ namespace MusicTimeGUI
             {
                 Button_Click(new object(), new RoutedEventArgs());
             }
+        }
+
+        private void DisplayPlaylist(Playlist list)
+        {
+            
+        }
+
+        private void InitializePlaylists()
+        {
+            using (var db = new PlaylistsModel())
+            {
+                foreach (Playlist playlist in db.Playlists)
+                {
+                    Button btn = new Button();
+                    btn.Content = playlist.Name;
+                    btn.Click += (s, e) => DisplayPlaylist(playlist);
+                }
+            }
+        }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            // Add to playlist
+        }
+
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        {
+            //Create new playlist
         }
     }
 

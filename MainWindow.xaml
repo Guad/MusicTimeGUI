@@ -26,22 +26,49 @@
                 <RowDefinition/>
                 <RowDefinition Height="64"/>
             </Grid.RowDefinitions>
-            <StackPanel>
+            <StackPanel x:Name="PlaylistStackPanel">
                 <Button Content="Discover" MinHeight="20" FontSize="16" Margin="10"></Button>
-                <Button Content="Playlist #1" MinHeight="20" FontSize="16" Margin="10"></Button>
+                <Button  MinHeight="20" FontSize="16" Margin="10" Click="ButtonBase_OnClick">
+                    <Rectangle Fill="Black" Width="20" Height="20">
+                        <Rectangle.OpacityMask>
+                            <VisualBrush Visual="{StaticResource appbar_add}" Stretch="Fill"/>
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </Button>
             </StackPanel>
             <Label Grid.Row="1" Grid.Column="0" x:Name="songNameLabel" Content="" VerticalAlignment="Top" Margin="70,2,0,0" Height="30" FontSize="14.667"/>
             <Label Grid.Row="1" Grid.Column="0" x:Name="songArtistLabel" Content="" VerticalAlignment="Top" Margin="70,25,0,0" Height="26" Foreground="#FF6E6E6E" />
             <Image Grid.Row="1" Grid.Column="0"  x:Name="songPicture" HorizontalAlignment="Left" Height="64" Margin="0" VerticalAlignment="Top" Width="64"/>
         </Grid>
         <DockPanel Grid.ColumnSpan="2" Grid.Row="1">
-            <Button x:Name="PrevButton" Content="&lt;" Margin="10, 15, 0, 10" Width="30" DockPanel.Dock="Left" IsEnabled="False" Click="PrevButton_Click" Style="{DynamicResource MetroCircleButtonStyle}"/>
-            <Button x:Name="PlayPauseButton" Content="&gt;" Margin="10, 15, 0, 10" Width="30" Click="PlayPauseButton_Click" DockPanel.Dock="Left" Style="{DynamicResource MetroCircleButtonStyle}">
-                
+            <Button x:Name="PrevButton" Margin="10, 0, 0, 10" Width="50" Height="50" DockPanel.Dock="Left" IsEnabled="False" Click="PrevButton_Click" Style="{DynamicResource MetroCircleButtonStyle}">
+                <Rectangle x:Name="PrevRect"  Fill="Gray" Width="20" Height="20">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Visual="{StaticResource appbar_navigate_previous}" Stretch="Fill"/>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
             </Button>
-            <Button x:Name="NextButton" Content="&gt;" Margin="10, 15, 0, 10" Width="30" DockPanel.Dock="Left" IsEnabled="False" Click="NextButton_Click" Style="{DynamicResource MetroCircleButtonStyle}"/>
+            <Button x:Name="PlayPauseButton" Margin="10, 0, 0, 10" Width="50" Height="50" Click="PlayPauseButton_Click" DockPanel.Dock="Left" Style="{DynamicResource MetroCircleButtonStyle}">
+                <Rectangle Fill="{DynamicResource BlackBrush}" Width="20" Height="20">
+                    <Rectangle.OpacityMask >
+                        <VisualBrush x:Name="PlayPauseVisual"  Visual="{StaticResource appbar_control_play}" Stretch="Fill"/>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
+            <Button x:Name="NextButton" Margin="10, 0, 0, 10" Width="50" Height="50" DockPanel.Dock="Left" IsEnabled="False" Click="NextButton_Click" Style="{DynamicResource MetroCircleButtonStyle}">
+                <Rectangle x:Name="NextRect" Fill="Gray" Width="20" Height="20">
+                    <Rectangle.OpacityMask>
+                        <VisualBrush Visual="{StaticResource appbar_navigate_next}" Stretch="Fill"/>
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+            </Button>
             <Label x:Name="CurrentTimeLabel" Content="0:00" Margin="10, 15, 0, 10" DockPanel.Dock="Left"/>
             <Slider x:Name="VolumeSlider" Margin="10,17,10,10" Width="100" ValueChanged="VolumeSlider_ValueChanged" Value="100" Maximum="100" DockPanel.Dock="Right"/>
+            <Rectangle Fill="Gray" Width="20" Height="20" DockPanel.Dock="Right" Margin="15,15,0,10">
+                <Rectangle.OpacityMask>
+                    <VisualBrush Visual="{StaticResource appbar_sound_2}" Stretch="Fill"/>
+                </Rectangle.OpacityMask>
+            </Rectangle>
             <Label x:Name="TotalTimeLabel" Content="0:00" Margin="10, 15, 0, 10" DockPanel.Dock="Right" />
             <Slider x:Name="ProgresSlider"  Margin="10,17,0,10" Value="0" Thumb.DragCompleted="ProgresSlider_ValueChanged" DockPanel.Dock="Right"/>
         </DockPanel>
@@ -49,17 +76,28 @@
             <TabItem Visibility="Collapsed">
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="95"/>
-                        <RowDefinition Height="305*"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
-                    <StackPanel Orientation="Vertical">
-                        <TextBox Grid.Row="0" x:Name="textBox" Height="27" Margin="0,10,0,10" TextWrapping="WrapWithOverflow" FontSize="16" ToolTip="Search Query" KeyUp="textBox_KeyUp">
-                        </TextBox>
-                        <Button x:Name="searchButton" Content="Search" Click="Button_Click" FontSize="21.333" Margin="0,5,0,5"/>
-                    </StackPanel>
+                    <Grid>
+                        <TextBox Controls:TextBoxHelper.Watermark="Search Query" Controls:TextBoxHelper.ClearTextButton="True" Grid.Row="0" x:Name="textBox" Height="30" Margin="0,10,0,10" TextWrapping="WrapWithOverflow" FontSize="16" ToolTip="Search Query" KeyUp="textBox_KeyUp"/>
+                        <Button x:Name="searchButton" Click="Button_Click" FontSize="11.333" Margin="0,0,30,0" Width="25" Height="25" HorizontalAlignment="Right" BorderBrush="Transparent" Background="{x:Null}">
+                            <Rectangle  Fill="Gray" Width="11" Height="11">
+                                <Rectangle.OpacityMask>
+                                    <VisualBrush Visual="{StaticResource appbar_magnify}" Stretch="Fill"/>
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                        </Button>
+                    </Grid>
                     <DataGrid x:Name="SearchResultsGrid" Margin="0" Grid.Row="1" IsReadOnly="True" ColumnWidth="*" MouseDoubleClick="SearchResultsGrid_MouseDoubleClick">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu x:Name="SearchContextMenu">
+                                <MenuItem Header="Add to Favorites" Click="MenuItem_OnClick"/>
+                                <MenuItem Header="Add to New Playlist"/>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                     </DataGrid>
-                    <Label x:Name="SearchFeedbackLabel" Content="" HorizontalAlignment="Center" Margin="0,0" Grid.Row="1" VerticalAlignment="Center" FontSize="29.333"/>
+                    <Controls:ProgressRing x:Name="SearchProgressRing" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource AccentColorBrush}" Margin="243,121,243,116"/>
                 </Grid>
             </TabItem>
         </TabControl>
