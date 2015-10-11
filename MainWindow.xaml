@@ -93,7 +93,7 @@
                     <RowDefinition Height="221*"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Content="Discover" MinHeight="20" FontSize="16" Margin="10" Click="DiscoverButton_Click"></Button>
-                <Expander Grid.Row="1" Header="Playlists">
+                <Expander Grid.Row="1" Header="Playlists" BorderBrush="{x:Null}">
                     <ScrollViewer>
                         <StackPanel x:Name="PlaylistStackPanel">
                             <Button  MinHeight="20" FontSize="16" Margin="10" Click="ButtonBase_OnClick">
