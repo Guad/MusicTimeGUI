@@ -67,7 +67,11 @@ namespace MusicTimeGUI
                     });
                     return;
                 }
-                PlaySong(_history[_currentSong++]);
+                _currentSong++;
+                TotalTimeLabel.Dispatcher.BeginInvoke((Action) delegate
+                {
+                    PlaySong(_history[_currentSong]);
+                });
             }
             TotalTimeLabel.Dispatcher.BeginInvoke((Action) delegate
             {
