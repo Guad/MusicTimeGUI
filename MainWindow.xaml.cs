@@ -9,6 +9,7 @@ using System.Timers;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using MahApps.Metro.Controls;
 using MusicTimeCore;
 using Timer = System.Timers.Timer;
 
@@ -17,7 +18,7 @@ namespace MusicTimeGUI
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {
@@ -81,7 +82,8 @@ namespace MusicTimeGUI
             set
             {
                 _isPaused = value;
-                PlayPauseButton.Content = value ? "Play" : "Pause";
+                //PlayPauseButton.Content = value ? "Play" : "Pause";
+                PlayPauseButton.Content = value ? ">" : "||";
             }
         }
 
@@ -93,6 +95,12 @@ namespace MusicTimeGUI
             if (string.IsNullOrWhiteSpace(query)) return;
             Thread searchThread = new Thread((ThreadStart) delegate
             {
+                SearchFeedbackLabel.Dispatcher.BeginInvoke((Action) delegate
+                {
+                    SearchFeedbackLabel.Content = "Searching...";
+                    textBox.IsEnabled = false;
+                    searchButton.IsEnabled = false;
+                });
                 IEnumerable<Song> result;
                 try
                 {
@@ -114,6 +122,12 @@ namespace MusicTimeGUI
                 SearchResultsGrid.Dispatcher.BeginInvoke((Action)delegate
                 {
                     SearchResultsGrid.ItemsSource = songs;
+                });
+                SearchFeedbackLabel.Dispatcher.BeginInvoke((Action)delegate
+                {
+                    SearchFeedbackLabel.Content = "";
+                    textBox.IsEnabled = true;
+                    searchButton.IsEnabled = true;
                 });
             });
             searchThread.Start();
@@ -182,6 +196,10 @@ namespace MusicTimeGUI
                 }
                 catch (NullReferenceException)
                 {
+                    songPicture.Dispatcher.BeginInvoke((Action) delegate
+                    {
+                        songPicture.Source = new BitmapImage(new Uri("DefaultAlbum.png", UriKind.Relative));
+                    });
                     return;
                 }
                 SetPicture(uri);
@@ -221,6 +239,14 @@ namespace MusicTimeGUI
         {
             _currentSong++;
             PlaySong(_history[_currentSong]);
+        }
+
+        private void textBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Button_Click(new object(), new RoutedEventArgs());
+            }
         }
     }
 
