@@ -11,7 +11,7 @@
         ResizeMode="CanResizeWithGrip"
         WindowTransitionsEnabled="False"
         WindowStartupLocation="CenterScreen"
-        Title="MusicTime" Height="443.405" Width="785.89">
+        Title="Music Time" Height="443.405" Width="785.89" Icon="Logo-min.ico">
     <Controls:MetroWindow.RightWindowCommands>
         <Controls:WindowCommands>
             <Button Click="SettingsButton_Click">

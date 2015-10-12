@@ -45,4 +45,17 @@ namespace MusicTimeGUI
     {
         public List<Playlist> Playlists { get; set; }
     }
+
+    public class Playlist
+    {
+        public List<SavedSong> Songs { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class SavedSong
+    {
+        public string Name { get; set; }
+        public string Artist { get; set; }
+        public string Uri { get; set; }
+    }
 }

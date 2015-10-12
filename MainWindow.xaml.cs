@@ -63,7 +63,7 @@ namespace MusicTimeGUI
                     _isSongPlaying = false;
                     Dispatcher.BeginInvoke((Action) delegate
                     {
-                        Title = "MusicTime";
+                        Title = "Music Time";
                     });
                     return;
                 }
@@ -75,7 +75,7 @@ namespace MusicTimeGUI
             }
             TotalTimeLabel.Dispatcher.BeginInvoke((Action) delegate
             {
-                Title = "MusicTime | " + manager.StatusString;
+                Title = "Music Time | " + manager.StatusString;
                 ProgresSlider.Maximum = (int)manager.CurrentMedia.duration;
                 TotalTimeLabel.Content = manager.CurrentMedia.durationString;
                 CurrentTimeLabel.Content = manager.CurrentTimeString;
